@@ -232,7 +232,7 @@ void MainWindow::renderTask(const Task& task) {
     //заметка
     QLabel *noteLabel = new QLabel(task.note.isEmpty() ? "Нет заметки" : task.note, this);
     noteLabel->setStyleSheet("color: gray; font-style: italic;");
-    noteLabel->setTextInteractionFlags(Qt::TextEditorInteraction); // Это позволит редактировать текст заметки
+    noteLabel->setTextInteractionFlags(Qt::TextEditorInteraction); 
     noteLabel->installEventFilter(this);
 
     //время
@@ -254,24 +254,21 @@ void MainWindow::renderTask(const Task& task) {
         dateTimeEdit->setDisplayFormat("dd.MM.yyyy hh:mm");
         dateTimeEdit->setCalendarPopup(true);
 
-        // Когда пользователь выбирает новое время
         connect(dateTimeEdit, &QDateTimeEdit::editingFinished, [=]() {
             QDateTime newDateTime = dateTimeEdit->dateTime();
             if (newDateTime != task.dueTime) {
                 Task updatedTask = task;
                 updatedTask.dueTime = newDateTime;
 
-                // Обновляем метку времени
+                // Обновление метки времени
                 timeLabel->setText(newDateTime.toString("dd.MM.yyyy hh:mm"));
 
-                // Обновляем стиль метки времени в зависимости от нового времени
                 if (newDateTime > QDateTime::currentDateTime()) {
                     timeLabel->setStyleSheet("color: gray;");
                 } else {
                     timeLabel->setStyleSheet("color: red;");
                 }
 
-                // Обновляем задачу в списке и сохраняем
                 for (Task &t : tasks) {
                     if (t.text == task.text) {
                         t.dueTime = newDateTime;
@@ -279,9 +276,9 @@ void MainWindow::renderTask(const Task& task) {
                     }
                 }
 
-                saveTasks();  // Сохранение изменений в задаче
+                saveTasks();  
             }
-            dateTimeEdit->deleteLater();  // Удаление временного виджета
+            dateTimeEdit->deleteLater();  
         });
 
         dateTimeEdit->move(timeLabel->mapToGlobal(QPoint(0, 0)));
@@ -296,7 +293,6 @@ void MainWindow::renderTask(const Task& task) {
     taskWidget->setLayout(taskVBox);
     taskLayout->addWidget(taskWidget);
 
-    // Обработчик для кнопки удаления задачи
     connect(circleButton, &QPushButton::clicked, this, [=]() {
         taskLayout->removeWidget(taskWidget);
         taskWidget->deleteLater();
